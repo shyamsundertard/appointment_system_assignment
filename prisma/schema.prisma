@@ -1,0 +1,49 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  email       String       @unique
+  password    String
+  name        String
+  role        Role
+}
+
+model Availability {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  professorId String       @db.ObjectId
+  startTime   DateTime
+  endTime     DateTime
+
+  appointments Appointment[]
+}
+
+model Appointment {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  availabilityId String       @db.ObjectId
+  studentId      String       @db.ObjectId
+  professorId    String       @db.ObjectId
+  startTime      DateTime
+  endTime        DateTime
+  status         Status       @default(PENDING)
+
+  availability   Availability @relation(fields: [availabilityId], references: [id])
+}
+
+enum Role {
+  STUDENT
+  PROFESSOR
+}
+
+enum Status {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}

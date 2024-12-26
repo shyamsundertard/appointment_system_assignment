@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
-import userRoutes from "./routes/user.ts";
+import userRouter from "./routes/user.ts";
+import availabilityRouter from "./routes/availability.ts";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -12,8 +14,10 @@ if(!process.env.PORT) {
 const port: number = parseInt(process.env.PORT, 10);
 
 app.use(express.json());
+app.use(cookieParser());
 
-app.use("/auth", userRoutes);
+app.use("/auth", userRouter);
+app.use("/", availabilityRouter);
 
 app.use((req,res) => {
     res.status(404).send();

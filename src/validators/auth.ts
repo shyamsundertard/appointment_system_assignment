@@ -16,5 +16,5 @@ export const registrationValidation = [
 
 export const loginValidation = [
     body("email").isEmail().withMessage("Invalid email address"),
-    body("password").isEmpty().withMessage("Password is required")
+    body("password").notEmpty().withMessage("Password is required")
 ]

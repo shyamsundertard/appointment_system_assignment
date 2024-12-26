@@ -4,6 +4,7 @@ import bcrypt, { compare } from "bcrypt";
 import pkge from "jsonwebtoken";
 import { loginValidation, registrationValidation } from "../validators/auth.ts";
 import { validationResult } from "express-validator";
+import { Role } from "@prisma/client";
 
 const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -29,7 +30,7 @@ userRouter.get("/users", async (req: Request, res: Response) => {
 })
 
 //user by id
-userRouter.get("/users/:id", async (req: Request, res: Response) => {
+userRouter.get("/users/id/:id", async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const users = await prisma.user.findUnique({
@@ -40,6 +41,30 @@ userRouter.get("/users/:id", async (req: Request, res: Response) => {
         res.status(500).json(error);
     }
 })
+
+//user by role
+userRouter.get("/users/role/:role", async (req: Request, res: Response) => {
+    try {
+        const role = req.params.role;
+        if (!Object.values(Role).includes(role as Role)) {
+            res.status(400).json({error: "Invalid role"});
+            return;
+        }
+
+        const users = await prisma.user.findMany({
+            where: { role: role as Role },
+        });
+
+        if (users.length == 0) {
+            res.status(404).json({message: "No users found for specified role"});
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+})
+
 //registration
 userRouter.post("/register", registrationValidation, async (req: Request, res: Response): Promise<void> => {
 

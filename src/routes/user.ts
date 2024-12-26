@@ -44,7 +44,7 @@ userRouter.get("/users/id/:id", authenticateJWT, async (req: Request, res: Respo
 })
 
 //user by role
-userRouter.get("/users/role/:role", authenticateJWT, async (req: Request, res: Response) => {
+userRouter.get("/users/role/:role", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     try {
         const role = req.params.role;
         if (!Object.values(Role).includes(role as Role)) {
@@ -58,6 +58,7 @@ userRouter.get("/users/role/:role", authenticateJWT, async (req: Request, res: R
 
         if (users.length == 0) {
             res.status(404).json({message: "No users found for specified role"});
+            return;
         }
 
         res.status(200).json(users);

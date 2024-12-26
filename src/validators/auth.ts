@@ -19,6 +19,6 @@ export const loginValidation = [
 ]
 
 export const timeValidation = [
-    body("startTime").isLength({min: 20, max: 20}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ssZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ssZ"),
-    body("endTime").isLength({min: 20, max: 20}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ssZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ssZ")
+    body("startTime").isLength({min: 24, max: 24}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ"),
+    body("endTime").isLength({min: 24, max: 24}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ")
 ]

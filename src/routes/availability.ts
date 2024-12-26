@@ -3,6 +3,7 @@ import prisma from "../lib/prisma.ts";
 import { AuthenticatedRequest, authenticateJWT, authorizeRole } from "../middlewares/auth_middleware.ts";
 import { timeValidation } from "../validators/auth.ts";
 import { validationResult } from "express-validator";
+import { checkAvailabilityOverlap } from "../middlewares/overlapCheck.ts";
 
 const availabilityRouter = express.Router();
 
@@ -39,7 +40,7 @@ availabilityRouter.get("/availability/id/:id", async (req: Request, res: Respons
 })
 
 //new slot
-availabilityRouter.post("/availability/new", authenticateJWT, authorizeRole("PROFESSOR"), timeValidation, async (req:AuthenticatedRequest, res: Response): Promise<void> => {
+availabilityRouter.post("/availability/new", authenticateJWT, authorizeRole("PROFESSOR"), timeValidation, checkAvailabilityOverlap, async (req:AuthenticatedRequest, res: Response): Promise<void> => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(400).json({ errors: errors.array() });

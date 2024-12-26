@@ -5,6 +5,7 @@ import pkge from "jsonwebtoken";
 import { loginValidation, registrationValidation } from "../validators/auth.ts";
 import { validationResult } from "express-validator";
 import { Role } from "@prisma/client";
+import { authenticateJWT } from "../middlewares/auth_middleware.ts";
 
 const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -20,7 +21,7 @@ if (!TOKEN_NAME) {
 }
 
 //all user
-userRouter.get("/users", async (req: Request, res: Response) => {
+userRouter.get("/users", authenticateJWT, async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany();
         res.status(200).json(users);
@@ -30,7 +31,7 @@ userRouter.get("/users", async (req: Request, res: Response) => {
 })
 
 //user by id
-userRouter.get("/users/id/:id", async (req: Request, res: Response) => {
+userRouter.get("/users/id/:id", authenticateJWT, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const users = await prisma.user.findUnique({
@@ -43,7 +44,7 @@ userRouter.get("/users/id/:id", async (req: Request, res: Response) => {
 })
 
 //user by role
-userRouter.get("/users/role/:role", async (req: Request, res: Response) => {
+userRouter.get("/users/role/:role", authenticateJWT, async (req: Request, res: Response) => {
     try {
         const role = req.params.role;
         if (!Object.values(Role).includes(role as Role)) {

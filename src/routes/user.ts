@@ -7,10 +7,15 @@ import { validationResult } from "express-validator";
 
 const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
+const TOKEN_NAME = process.env.TOKEN_NAME;
 const { sign } = pkge;
 
 if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in environment variables");
+}
+
+if (!TOKEN_NAME) {
+    throw new Error("TOKEN_NAME is not defined in environment variables");
 }
 
 //all user
@@ -91,7 +96,7 @@ userRouter.post("/login",loginValidation, async (req: Request, res: Response): P
         const token = sign({id: user.id, name: user.name, email: user.email, role: user.role}, JWT_SECRET, {expiresIn: "1h"})
         res
         .status(200)
-        .cookie("token", token, {httpOnly: true, secure: false, sameSite: "lax", maxAge: 60*60*1000})
+        .cookie(TOKEN_NAME, token, {httpOnly: true, secure: false, sameSite: "lax", maxAge: 60*60*1000})
         .json({ message: "Logged in successfully!" });
         return;
     } catch (error) {

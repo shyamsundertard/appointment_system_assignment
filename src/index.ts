@@ -5,7 +5,11 @@ import userRoutes from "./routes/user.ts";
 dotenv.config();
 
 const app: Application = express();
-const port: number = parseInt(process.env.PORT || '8000', 10);
+
+if(!process.env.PORT) {
+    throw new Error("PORT is not defines in environment variables");
+}
+const port: number = parseInt(process.env.PORT, 10);
 
 app.use(express.json());
 

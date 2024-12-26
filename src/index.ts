@@ -1,15 +1,15 @@
-import express from "express";
+import express, { Application } from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.ts";
 
 dotenv.config();
 
-const app = express();
+const app: Application = express();
 const port: number = parseInt(process.env.PORT || '8000', 10);
 
 app.use(express.json());
 
-app.use("/", userRoutes);
+app.use("/auth", userRoutes);
 
 app.use((req,res) => {
     res.status(404).send();

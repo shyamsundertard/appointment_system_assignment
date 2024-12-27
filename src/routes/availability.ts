@@ -103,23 +103,29 @@ availabilityRouter.get("/availability/student/timeSlots/:professorId", authentic
 })
 
 //new slot
-availabilityRouter.post("/availability/new", authenticateJWT, authorizeRole(Role.PROFESSOR), timeValidation, checkAvailabilityOverlap, async (req:AuthenticatedRequest, res: Response): Promise<void> => {
+availabilityRouter.post("/availability/new", authenticateJWT, authorizeRole(Role.PROFESSOR), timeValidation, async (req:AuthenticatedRequest, res: Response): Promise<void> => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(400).json({ errors: errors.array() });
         return;
     }
 
-    const id = req.user?.id as string;
     try {
-        const {startTime, endTime} = req.body;
-        await prisma.availability.create({
-            data: { professorId:id, startTime, endTime},
+        await checkAvailabilityOverlap(req,res, async () => {
+            const id = req.user?.id as string;
+            const {startTime, endTime} = req.body;
+            await prisma.availability.create({
+                data: { professorId:id, startTime, endTime},
+            })
+            .then(() => {
+                res.status(200).json({ message: "New slot created successfully"});
+            })
+            .catch((error) => {
+                res.status(500).json({ error: "Error creating availability slot" });
+            });
         });
-
-        res.status(200).json({ message: "New slot created successfully"});
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: "Server error" });
     }
 })
 

@@ -26,7 +26,7 @@ userRouter.get("/users", authenticateJWT, async (req: Request, res: Response) =>
         const users = await prisma.user.findMany();
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while fetching users" });
     }
 })
 
@@ -39,7 +39,7 @@ userRouter.get("/users/id/:id", authenticateJWT, async (req: Request, res: Respo
         });
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json(error);
+    res.status(500).json({ error: "Error occured while fetching user" });
     }
 })
 
@@ -63,7 +63,7 @@ userRouter.get("/users/role/:role", authenticateJWT, async (req: Request, res: R
 
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while fetching user" });
     }
 })
 
@@ -94,7 +94,7 @@ userRouter.post("/register", registrationValidation, async (req: Request, res: R
         return;
       } catch (error) {
         console.error(error);
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while registration of user" });
       }
 });
 
@@ -128,7 +128,7 @@ userRouter.post("/login",loginValidation, async (req: Request, res: Response): P
         return;
     } catch (error) {
         console.error(error);
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while login" });
     }
 });
 

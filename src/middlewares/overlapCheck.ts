@@ -10,14 +10,14 @@ export const checkAvailabilityOverlap = async (req: AuthenticatedRequest, res: R
         const professorId = req.user?.id;
         const {startTime, endTime} = req.body;
 
-        if (startTime >= endTime) {
+        if (new Date(startTime) >= new Date(endTime)) {
             res.status(400).json({ error: "End time must be after Start time"});
             return;
         }
 
         const currentTime = getLocalTime();
         
-        if (startTime <= currentTime) {
+        if (new Date(startTime) <= new Date(currentTime)) {
             res.status(400).json({ error: "Cannot create availability slot in past" });
             return;
         }
@@ -74,13 +74,13 @@ export const checkAppointmentOverlap = async (req: AuthenticatedRequest, res: Re
         const professorId = req.params.professorId;
         const { startTime, endTime } = req.body;
 
-        if ( startTime >= endTime ) {
+        if ( new Date(startTime) >= new Date(endTime) ) {
             res.status(500).json({ error: "End time must be after Start time" });
             return;
         }
 
         const currentTime = getLocalTime();
-        if ( startTime <= currentTime ) {
+        if ( new Date(startTime) <= new Date(currentTime) ) {
             res.status(500).json({ error: "Cannot create appointment in past" });
             return;
         }
@@ -101,6 +101,16 @@ export const checkAppointmentOverlap = async (req: AuthenticatedRequest, res: Re
         });
         if (!slot) {
             res.status(404).json({ error: "No availability slot found for given id and professor" });
+            return;
+        }
+        if ( new Date(startTime) < slot.startTime || new Date(startTime) > slot.endTime || new Date(endTime) > slot.endTime || new Date(endTime) < slot.startTime) {
+            res.status(400).json({
+                error: "Professor is not available for this duration",
+                availableWindow: {
+                    startTime: slot.startTime,
+                    endTime: slot.endTime
+                }
+            });
             return;
         }
 
@@ -127,7 +137,7 @@ export const checkAppointmentOverlap = async (req: AuthenticatedRequest, res: Re
                         ]
                     }
                 ],
-                status: Status.CONFIRMED
+                // status: Status.CONFIRMED
             }
         });
         if (existingAppointments.length > 0) {

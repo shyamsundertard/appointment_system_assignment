@@ -11,7 +11,11 @@ const availabilityRouter = express.Router();
 //all time slots
 availabilityRouter.get("/availability", async (req: Request, res: Response): Promise<void> => {
     try {
-        const slots = await prisma.availability.findMany();
+        const slots = await prisma.availability.findMany({
+            include: {
+                appointments: true,
+            }
+        });
         if (!slots || slots.length == 0) {
             res.status(404).json({ error: "No slot found" });
             return;
@@ -20,7 +24,7 @@ availabilityRouter.get("/availability", async (req: Request, res: Response): Pro
         return;
     } catch (error) {
         console.error(error);
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while finding availability slots!" });
     }
 })
 
@@ -28,7 +32,10 @@ availabilityRouter.get("/availability", async (req: Request, res: Response): Pro
 availabilityRouter.get("/availability/id/:id", async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     try {
-        const slot = await prisma.availability.findUnique({ where: {id} });
+        const slot = await prisma.availability.findUnique({
+            where: {id} ,
+            include: {appointments: true}
+        });
         if (!slot) {
             res.status(404).json({ error: "Slot not exist" });
             return;
@@ -36,7 +43,7 @@ availabilityRouter.get("/availability/id/:id", async (req: Request, res: Respons
 
         res.status(200).json(slot);
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: "Error occured while finding time slot" });
     }
 })
 
@@ -125,7 +132,7 @@ availabilityRouter.post("/availability/new", authenticateJWT, authorizeRole(Role
             });
         });
     } catch (error) {
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 })
 

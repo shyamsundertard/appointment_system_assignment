@@ -5,8 +5,10 @@ import { timeValidation } from "../validators/auth.ts";
 import { validationResult } from "express-validator";
 import { checkAvailabilityOverlap } from "../middlewares/overlapCheck.ts";
 import { Role } from "@prisma/client";
+import getLocalTime from "../utils/localTime.ts";
 
 const availabilityRouter = express.Router();
+const currentTime = getLocalTime();
 
 //all time slots
 availabilityRouter.get("/availability", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
@@ -47,7 +49,43 @@ availabilityRouter.get("/availability/id/:id", authenticateJWT, async (req: Requ
     }
 })
 
-//timeSlots by professorId for professor
+// active timeSlots by professorId for professor
+availabilityRouter.get("/availability/professor/timeSlots/active", authenticateJWT, authorizeRole(Role.PROFESSOR), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+       const professorId = req.user?.id;
+       const slots = await prisma.availability.findMany({ 
+        where: { 
+            professorId,
+            AND: [
+                {endTime: { gt: new Date(currentTime)}}
+            ]
+         },
+        include: {
+            appointments: true
+        }
+       });
+       if (!slots || slots.length == 0) {
+        res.status(404).json({ error: "No availability slot found"});
+        return;
+       }
+
+       res.status(200).json({
+        timeSlots: slots.map(slot => ({
+            id: slot.id,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            appointments: slot.appointments
+        }))
+       });
+
+       return;
+
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching slots"});
+    }
+})
+
+// all timeSlots by professorId for professor
 availabilityRouter.get("/availability/professor/timeSlots", authenticateJWT, authorizeRole(Role.PROFESSOR), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
        const professorId = req.user?.id;
@@ -78,12 +116,17 @@ availabilityRouter.get("/availability/professor/timeSlots", authenticateJWT, aut
     }
 })
 
-//timeSlots by professorId for student
-availabilityRouter.get("/availability/student/timeSlots/:professorId", authenticateJWT, authorizeRole(Role.STUDENT), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+//active timeSlots by professorId for student
+availabilityRouter.get("/availability/student/activeTimeSlots/:professorId", authenticateJWT, authorizeRole(Role.STUDENT), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
        const professorId = req.params.id;
        const slots = await prisma.availability.findMany({ 
-        where: { professorId },
+        where: { 
+            professorId,
+            AND: [
+                {endTime: {gt: new Date(currentTime) }}
+            ]
+         },
         include: {
             appointments: true
         }

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.ts";
 import availabilityRouter from "./routes/availability.ts";
 import cookieParser from "cookie-parser";
+import appointmentRouter from "./routes/appointment.ts";
 
 dotenv.config();
 
@@ -18,7 +19,9 @@ app.use(cookieParser());
 
 app.use("/auth", userRouter);
 app.use("/", availabilityRouter);
+app.use("/", appointmentRouter);
 
+// returns 404 for other routes
 app.use((req,res) => {
     res.status(404).send();
 });

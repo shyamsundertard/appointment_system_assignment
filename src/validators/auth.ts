@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { error } from "console";
 import { body } from "express-validator";
 
 export const registrationValidation = [
@@ -20,36 +19,6 @@ export const loginValidation = [
 ]
 
 export const timeValidation = [
-    body("startTime")
-    .exists()
-    .withMessage("startTime is required")
-    .notEmpty()
-    .withMessage("startTime cannot be empty")
-    .custom((value) => {
-        const dateRegex = /^d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
-        if (!dateRegex.test(value)) {
-            throw new Error("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.sssZ");
-        }
-        const date = new Date(value);
-        if (isNaN(date.getTime())) {
-            throw new Error("Invalid date value");
-        }
-        return;
-    }),
-    body("endTime")
-        .exists()
-        .withMessage("endTime is required")
-        .notEmpty()
-        .withMessage("endTime cannot be empty")
-        .custom((value) => {
-            const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
-            if (!dateRegex.test(value)) {
-                throw new Error("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.sssZ");
-            }
-            const date = new Date(value);
-            if (isNaN(date.getTime())) {
-                throw new Error("Invalid date value");
-            }
-            return true;
-        }),
+    body("startTime").isLength({min: 24, max: 24}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ"),
+    body("endTime").isLength({min: 24, max: 24}).withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ").isISO8601().withMessage("Invalid DateTime format, expected: YYYY-MM-DDTHH:mm:ss.uuuZ")
 ]

@@ -9,7 +9,7 @@ import { Role } from "@prisma/client";
 const availabilityRouter = express.Router();
 
 //all time slots
-availabilityRouter.get("/availability", async (req: Request, res: Response): Promise<void> => {
+availabilityRouter.get("/availability", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     try {
         const slots = await prisma.availability.findMany({
             include: {
@@ -29,7 +29,7 @@ availabilityRouter.get("/availability", async (req: Request, res: Response): Pro
 })
 
 //slot by id
-availabilityRouter.get("/availability/id/:id", async (req: Request, res: Response): Promise<void> => {
+availabilityRouter.get("/availability/id/:id", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     try {
         const slot = await prisma.availability.findUnique({

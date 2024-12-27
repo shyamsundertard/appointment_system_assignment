@@ -137,7 +137,7 @@ export const checkAppointmentOverlap = async (req: AuthenticatedRequest, res: Re
                         ]
                     }
                 ],
-                // status: Status.CONFIRMED
+                status: Status.CONFIRMED
             }
         });
         if (existingAppointments.length > 0) {

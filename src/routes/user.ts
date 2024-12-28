@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
 import prisma from '../lib/prisma.js';
-import bcrypt, { compare } from "bcrypt";
-import pkge from "jsonwebtoken";
+import * as bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { loginValidation, registrationValidation } from "../validators/auth.js";
 import { validationResult } from "express-validator";
 import { Role } from "@prisma/client";
@@ -10,7 +10,7 @@ import { authenticateJWT } from "../middlewares/auth_middleware.js";
 const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_NAME = process.env.TOKEN_NAME;
-const { sign } = pkge;
+
 
 if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in environment variables");
@@ -115,12 +115,12 @@ userRouter.post("/login",loginValidation, async (req: Request, res: Response): P
             return;
         }
 
-        const isValidPassword = await compare(password, user.password);
+        const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
             res.status(400).json({ error: "Invalid credentials" });
             return;
         }
-        const token = sign({id: user.id, name: user.name, email: user.email, role: user.role}, JWT_SECRET, {expiresIn: "1h"})
+        const token = jwt.sign({id: user.id, name: user.name, email: user.email, role: user.role}, JWT_SECRET, {expiresIn: "1h"})
         res
         .status(200)
         .cookie(TOKEN_NAME, token, {httpOnly: true, secure: false, sameSite: "lax", maxAge: 60*60*1000})

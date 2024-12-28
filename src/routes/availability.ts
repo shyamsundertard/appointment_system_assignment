@@ -1,11 +1,11 @@
 import express, {Request, Response} from "express";
-import prisma from "../lib/prisma.ts";
-import { AuthenticatedRequest, authenticateJWT, authorizeRole } from "../middlewares/auth_middleware.ts";
-import { timeValidation } from "../validators/auth.ts";
+import prisma from "../lib/prisma.js";
+import { AuthenticatedRequest, authenticateJWT, authorizeRole } from "../middlewares/auth_middleware.js";
+import { timeValidation } from "../validators/auth.js";
 import { validationResult } from "express-validator";
-import { checkAvailabilityOverlap } from "../middlewares/overlapCheck.ts";
+import { checkAvailabilityOverlap } from "../middlewares/overlapCheck.js";
 import { Role } from "@prisma/client";
-import getLocalTime from "../utils/localTime.ts";
+import getLocalTime from "../utils/localTime.js";
 
 const availabilityRouter = express.Router();
 const currentTime = getLocalTime();

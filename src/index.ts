@@ -1,9 +1,9 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
-import userRouter from "./routes/user.ts";
-import availabilityRouter from "./routes/availability.ts";
+import userRouter from "./routes/user.js";
+import availabilityRouter from "./routes/availability.js";
 import cookieParser from "cookie-parser";
-import appointmentRouter from "./routes/appointment.ts";
+import appointmentRouter from "./routes/appointment.js";
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ const app: Application = express();
 if(!process.env.PORT) {
     throw new Error("PORT is not defines in environment variables");
 }
-const port: number = parseInt(process.env.PORT, 10);
+const port: number = parseInt(process.env.PORT, 10) || 3000;
 
 app.use(express.json());
 app.use(cookieParser());

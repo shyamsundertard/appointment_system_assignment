@@ -1,11 +1,11 @@
 import express,{ Response } from "express";
-import { AuthenticatedRequest, authenticateJWT, authorizeRole } from "../middlewares/auth_middleware.ts";
-import prisma from "../lib/prisma.ts";
+import { AuthenticatedRequest, authenticateJWT, authorizeRole } from "../middlewares/auth_middleware.js";
+import prisma from "../lib/prisma.js";
 import { Role, Status } from "@prisma/client";
-import { timeValidation } from "../validators/auth.ts";
-import { checkAppointmentOverlap } from "../middlewares/overlapCheck.ts";
+import { timeValidation } from "../validators/auth.js";
+import { checkAppointmentOverlap } from "../middlewares/overlapCheck.js";
 import { validationResult } from "express-validator";
-import getLocalTime from "../utils/localTime.ts";
+import getLocalTime from "../utils/localTime.js";
 
 const appointmentRouter = express.Router();
 
@@ -81,7 +81,6 @@ appointmentRouter.get("/Appointments/upComing",authenticateJWT, async (req: Auth
         let appointments;
 
         const currentTime = getLocalTime();
-        console.log(currentTime);   
         
 
         if (role == Role.PROFESSOR) {

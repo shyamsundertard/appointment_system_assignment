@@ -1,11 +1,11 @@
 import express, {Request, Response} from "express";
-import prisma from '../lib/prisma.ts';
+import prisma from '../lib/prisma.js';
 import bcrypt, { compare } from "bcrypt";
 import pkge from "jsonwebtoken";
-import { loginValidation, registrationValidation } from "../validators/auth.ts";
+import { loginValidation, registrationValidation } from "../validators/auth.js";
 import { validationResult } from "express-validator";
 import { Role } from "@prisma/client";
-import { authenticateJWT } from "../middlewares/auth_middleware.ts";
+import { authenticateJWT } from "../middlewares/auth_middleware.js";
 
 const userRouter = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;

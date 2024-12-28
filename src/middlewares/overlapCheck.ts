@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
-import { AuthenticatedRequest } from "./auth_middleware.ts";
-import prisma from "../lib/prisma.ts";
-import getLocalTime from "../utils/localTime.ts";
+import { AuthenticatedRequest } from "./auth_middleware.js";
+import prisma from "../lib/prisma.js";
+import getLocalTime from "../utils/localTime.js";
 import { Role, Status } from "@prisma/client";
 
 

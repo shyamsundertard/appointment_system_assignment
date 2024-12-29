@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export interface AuthenticatedRequest extends Request {
     user?: {
@@ -26,7 +29,6 @@ export const authenticateJWT = (req: AuthenticatedRequest, res:Response, next: N
         const token = req.cookies[TOKEN_NAME];
         if (!token) {
             res.status(401).json({ error: "Access denied, no token provided" });
-            return;
         }
 
         const decoded = jwt.verify(token, JWT_SECRET) as { id: string, name: string, email: string, role: string};

@@ -118,6 +118,7 @@ export const checkAppointmentOverlap = async (req: AuthenticatedRequest, res: Re
 
             const existingAppointments = await Appointment.find({
                 availabilityId,
+                studentId,
                 $or: [
                     {
                         $and: [

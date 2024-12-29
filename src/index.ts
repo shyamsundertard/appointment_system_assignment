@@ -25,7 +25,7 @@ mongoose.connect(process.env.DATABASE_URL as string, {
     tlsAllowInvalidCertificates: true,
 })
 .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to DocumentDB Database");
 })
 .catch(err => {
     console.error("Database connection error:", err);

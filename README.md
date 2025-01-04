@@ -1,6 +1,3 @@
-# appointment_system_assignment
-# appointment_system_assignment
-
 # College Appointment System Backend
 
 ## Overview
@@ -8,6 +5,14 @@ This project implements backend APIs for a college appointment system, enabling:
 - **Students** to authenticate, view available appointment slots, and book appointments with professors.
 - **Professors** to authenticate, specify availability, manage appointment requests (accept/reject), and view their bookings.
 - The system ensures no duplicate user registration, validates all inputs, and notifies students if a new appointment clashes with an existing appointment.
+
+---
+
+ - **Codebase Overview and Database Structure**:
+   https://drive.google.com/file/d/1hIXjzqVl9LtVpUHFf7cXfW0GBjRIAE4i/view?usp=sharing
+
+ - **API Flow Demonstration with Postman**:
+   https://drive.google.com/file/d/1DHQJel104qd6vM1QB77LVJ_MLKWPIWXk/view?usp=sharing
 
 ---
 
